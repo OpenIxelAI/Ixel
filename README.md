@@ -10,7 +10,10 @@ Ixel is the all-in-one from [IxelAI](https://ixelai.com). One install gets you t
 - **[Handoff](https://github.com/OpenIxelAI/Handoff-by-IxelAI)** gives your agents one task board to share.
   Say `handoff dispatch "codex review my changes, gemini make me a list of …"` and each agent gets its part,
   all running at once, with the results back on the board.
-- **The Ixel app** opens from the Start Menu, Applications, or your app menu.
+- **The Ixel app** opens from the Start Menu, Applications, or your app menu. Ask your models (with
+  pictures, video or a voice note), see Handoff's board and your project's pull requests, reach your
+  servers and the OpenClaw or Hermes agents on them (Machines, which used to be Ixel Console), and check
+  and change your setup.
 
 Everything runs on your computer, with the API keys, subscriptions and local models you already have.
 
@@ -67,10 +70,11 @@ Your settings in `~/.config/ixel-mat`, and each project's `.handoff` board, stay
 
 ## Where it stands
 
-- **The app** is Ixel MAT's window for now: ask your models, and `/handoff` to hand out work. Handoff's
-  board, a health page and settings come into the same window next. After that: pictures, video and sound
-  you can attach, and connections to GitHub, Gitea and GitLab so pull requests show on the board.
-- **The one-line installers are new.** They're tested on Linux so far; Windows and macOS runs are next. If
+- **The app** has Ask, Board, Machines, Health and Settings. Ask attaches pictures, video and sound, and
+  `/handoff` hands out work. The Board shows Handoff's tasks and your project's pull requests on GitHub,
+  Gitea or GitLab, and has an agent review or fix one. Machines replaces Ixel Console: in Machines, press
+  **Import** to bring its machines over with the keys it pinned, then run `ixel-console uninstall`.
+- **It's tested on Linux so far**, the one-line installers included; Windows and macOS runs are next. If
   one fails for you, please [open an issue](https://github.com/OpenIxelAI/Ixel/issues/new/choose) with
   the output.
 - Under the hood, `ixel` and `handoff` stay separate commands, each in its own folder, so you can update or
