@@ -8,12 +8,12 @@
 
 Ixel is the all-in-one from [IxelAI](https://ixelai.com). One install gets you:
 
-- **[Ixel MAT](https://github.com/OpenIxelAI/ixel-mat):** ask several models at once. They grade each other's
+- **[Ixel MAT](https://ixelai.com/ixel-mat/):** ask several models at once. They grade each other's
   answers without knowing whose they are, and you get one verdict.
-- **[Handoff](https://github.com/OpenIxelAI/Handoff-by-IxelAI):** one task board your agents share, so Claude,
+- **[Handoff](https://ixelai.com/handoff/):** one task board your agents share, so Claude,
   Codex and the rest hand work to each other instead of through you.
-- **The Ixel app:** Ask, the Board, Machines (your servers and the agents on them), Health and Settings in one
-  window.
+- **The Ixel app:** Ask, the Board, [Machines](https://ixelai.com/machines/) (your servers and the agents on
+  them), Health and Settings in one window.
 
 Everything runs on your computer, with the API keys, subscriptions and local models you already have.
 
