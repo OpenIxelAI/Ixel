@@ -104,6 +104,15 @@ These stay until you delete them:
 - Under the hood, `ixel` and `handoff` stay separate commands, each in its own folder, so you can update or
   remove one without the other.
 
+## Privacy
+
+Ixel has no account, no server of its own and no telemetry: your questions go from your computer to the AI
+companies you set up, and nowhere else. What a company does with them after that is up to that company, not
+Ixel. Some train their models on what you send, or let their staff read it, mostly depending on whether you
+use an API key or a sign-in plan. [Which companies may train on it](https://ixelai.com/docs/privacy/#training)
+says what each one does, with links to its own terms, and how to keep your questions out. The rest of
+[that page](https://ixelai.com/docs/privacy/) lists everything Ixel sends and keeps.
+
 ## Problems and ideas
 
 [Open an issue](https://github.com/OpenIxelAI/Ixel/issues/new/choose) here for anything about Ixel,
