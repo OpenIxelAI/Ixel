@@ -64,7 +64,9 @@ Each tool also installs on its own. To add the other one later, run its line.
 ### Uninstall
 
 Each tool's installer prints the line that removes it. To remove all of Ixel at once, first run
-`handoff setup --remove`, which takes out what `handoff setup` added to your apps. Then:
+`handoff setup --remove`, which takes out what `handoff setup` added to your apps. Then run the lines below.
+If you already had an app called Ixel, the installer named Ixel's own Ixel MAT instead (`Ixel MAT.lnk`,
+`Ixel MAT.app`, `ixel-mat.desktop`), so put that name in place of Ixel's and leave yours.
 
 ```powershell
 # Windows
