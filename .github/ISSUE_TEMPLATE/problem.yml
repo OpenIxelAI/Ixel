@@ -5,7 +5,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        Thanks for reporting it. Before you paste any output, check it for API keys, tokens and personal details, and remove them. Security problems go privately to openixel.ai@gmail.com instead.
+        Thanks for reporting it. Before you paste any output, check it for API keys, tokens and personal details, and remove them. Security problems go privately to openixel.ai@proton.me instead.
   - type: textarea
     id: what
     attributes:

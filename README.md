@@ -116,7 +116,7 @@ says what each one does, with links to its own terms, and how to keep your quest
 ## Problems and ideas
 
 [Open an issue](https://github.com/OpenIxelAI/Ixel/issues/new/choose) here for anything about Ixel,
-including installing it. Security problems go privately to **openixel.ai@gmail.com**; see
+including installing it. Security problems go privately to **openixel.ai@proton.me**; see
 [SECURITY.md](SECURITY.md).
 
 ## Working on Ixel
