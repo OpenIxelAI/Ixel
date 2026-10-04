@@ -2,7 +2,7 @@
 
 ## Reporting a problem
 
-Please report anything that looks like a security problem privately, by email to **openixel.ai@gmail.com**,
+Please report anything that looks like a security problem privately, by email to **openixel.ai@proton.me**,
 or with GitHub's **Report a vulnerability** button on this repository's **Security** tab if it's there.
 Don't open a public issue. Problems in one tool can also go privately to that tool's repository:
 [Ixel MAT](https://github.com/OpenIxelAI/ixel-mat) or [Handoff](https://github.com/OpenIxelAI/Handoff-by-IxelAI).
