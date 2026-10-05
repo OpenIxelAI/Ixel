@@ -52,8 +52,9 @@ companies you set up, and nowhere else. Some of them train on what you send:
 included. Report security problems privately to **openixel.ai@proton.me**; see [SECURITY.md](SECURITY.md).
 
 `install.ps1` and `install.sh` are byte for byte the ones at the root of the
-[ixelai.com repository](https://github.com/OpenIxelAI/ixelai.com). Change them there; its
-`python scripts/make-installers.py` copies them here and `--check` fails when they differ.
+[ixelai.com repository](https://github.com/OpenIxelAI/ixelai.com). Change them there: with this checkout
+beside that one (or named with `--ixel`), its `python scripts/make-installers.py` copies them here, and `--check`
+fails when they differ.
 
 ## License
 
