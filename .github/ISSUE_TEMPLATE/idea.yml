@@ -1,0 +1,16 @@
+name: An idea
+description: Something Ixel should do, or do better
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What are you trying to get done?
+      description: The work you're doing and where Ixel gets in the way or falls short.
+    validations:
+      required: true
+  - type: textarea
+    id: idea
+    attributes:
+      label: What would help?
+      description: How you'd like it to work, if you have an idea.

@@ -1,0 +1,49 @@
+name: Something isn't working
+description: Installing, the app, Ixel MAT or Handoff did something wrong
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting it. Before you paste any output, check it for API keys, tokens and personal details, and remove them. Security problems go privately to openixel.ai@proton.me instead.
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened?
+      description: What you did, what you expected, and what happened instead.
+    validations:
+      required: true
+  - type: dropdown
+    id: system
+    attributes:
+      label: Your computer
+      options:
+        - Windows 11
+        - Windows 10
+        - macOS
+        - Linux
+    validations:
+      required: true
+  - type: dropdown
+    id: install
+    attributes:
+      label: What you installed
+      options:
+        - Ixel (everything)
+        - Ixel MAT alone
+        - Handoff alone
+        - From source
+    validations:
+      required: true
+  - type: textarea
+    id: output
+    attributes:
+      label: The command and its output
+      description: Paste what you ran and what it printed. If it's about the install, paste the installer's output.
+      render: text
+  - type: textarea
+    id: doctor
+    attributes:
+      label: ixel doctor and handoff doctor
+      description: If the tools installed, paste what `ixel doctor` and `handoff doctor` print.
+      render: text
