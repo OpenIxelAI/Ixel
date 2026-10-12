@@ -89,6 +89,14 @@ included. Report security problems privately to **openixel.ai@proton.me**; see [
 beside that one (or named with `--ixel`), its `python scripts/make-installers.py` copies them here, and `--check`
 fails when they differ.
 
+## Checks
+
+`.github/workflows/install.yml` runs the real installers end to end on every pull request and push to main:
+`install.sh` on Linux and macOS (everything, then Handoff alone with `sh install.sh handoff` in an empty home
+folder) and `install.ps1` on Windows, in PowerShell 7 and in Windows PowerShell 5.1. Each run then checks, in a
+new shell, that `ixel version` and `handoff version` work. It can also be run by hand from the Actions tab,
+against another branch of Ixel MAT or Handoff.
+
 ## License
 
 [MIT](LICENSE)

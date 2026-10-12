@@ -1,0 +1,175 @@
+# Runs the real installers end to end, so a change to either one, or to a tool's own installer, shows up
+# here first: install.sh on Linux and macOS, install.ps1 on Windows in PowerShell 7 and in Windows
+# PowerShell 5.1. It uses no secrets and caches nothing.
+name: Install
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      ixel_branch:
+        description: Ixel MAT branch to install
+        type: string
+        required: false
+        default: main
+      handoff_branch:
+        description: Handoff branch to install
+        type: string
+        required: false
+        default: main
+
+permissions:
+  contents: read
+
+# The branches the tools are installed from, as the installers read them. The inputs reach the scripts
+# only through these, never inside a run: script.
+env:
+  IXEL_BRANCH: ${{ inputs.ixel_branch || 'main' }}
+  HANDOFF_BRANCH: ${{ inputs.handoff_branch || 'main' }}
+
+jobs:
+  unix:
+    name: ${{ matrix.name }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: linux
+            os: ubuntu-latest
+          - name: mac
+            os: macos-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+
+      # Nothing on stdin and no terminal on a runner, so no question is asked: install.sh counts that as no.
+      - name: Install everything
+        run: sh install.sh </dev/null
+
+      # A new process, as a new terminal window would be, with the command folder on its PATH
+      - name: ixel and handoff work in a new shell
+        run: |
+          set -eu
+          for tool in ixel handoff; do
+            out="$(PATH="$HOME/.local/bin:$PATH" bash -c "$tool version" 2>&1)" || {
+              printf '%s\n' "$out"
+              echo "::error::$tool version failed in a new shell"
+              exit 1
+            }
+            echo "$tool version: $out"
+            case "$out" in
+              *[0-9]*) ;;
+              *)
+                echo "::error::$tool version printed no version"
+                exit 1 ;;
+            esac
+          done
+
+      # A fresh home, so nothing from the install above is in it. The checks go by path: command -v
+      # would also find the commands in the real home's ~/.local/bin.
+      - name: Install Handoff alone in a fresh home
+        run: |
+          set -eu
+          export HOME="$RUNNER_TEMP/home-handoff"
+          mkdir -p "$HOME"
+          unset XDG_CONFIG_HOME XDG_DATA_HOME XDG_CACHE_HOME XDG_STATE_HOME
+          sh "$GITHUB_WORKSPACE/install.sh" handoff </dev/null
+          if [ ! -x "$HOME/.local/bin/handoff" ]; then
+            echo "::error::$HOME/.local/bin/handoff is missing after sh install.sh handoff"
+            exit 1
+          fi
+          if [ -e "$HOME/.local/bin/ixel" ] || [ -L "$HOME/.local/bin/ixel" ]; then
+            echo "::error::$HOME/.local/bin/ixel exists, but only Handoff was asked for"
+            exit 1
+          fi
+          if [ -e "$HOME/.local/share/ixel-mat" ] || [ -L "$HOME/.local/share/ixel-mat" ]; then
+            echo "::error::$HOME/.local/share/ixel-mat exists, but only Handoff was asked for"
+            exit 1
+          fi
+
+      - name: handoff works in a new shell in the fresh home
+        run: |
+          set -eu
+          export HOME="$RUNNER_TEMP/home-handoff"
+          out="$(PATH="$HOME/.local/bin:$PATH" bash -c 'handoff version' 2>&1)" || {
+            printf '%s\n' "$out"
+            echo "::error::handoff version failed in a new shell"
+            exit 1
+          }
+          echo "handoff version: $out"
+          case "$out" in
+            *[0-9]*) ;;
+            *)
+              echo "::error::handoff version printed no version"
+              exit 1 ;;
+          esac
+
+  windows:
+    name: windows (${{ matrix.powershell }})
+    runs-on: windows-latest
+    timeout-minutes: 30
+    strategy:
+      # Each PowerShell gets a runner of its own, so a broken second install can't hide behind the first
+      fail-fast: false
+      matrix:
+        powershell: [pwsh, powershell]
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+
+      # install.ps1 never calls exit (with irm | iex that would close the window), so a problem prints
+      # "Install stopped" and returns with exit code 0. The log is what says whether it worked.
+      - name: Install
+        shell: pwsh
+        env:
+          PS_EXE: ${{ matrix.powershell }}
+        run: |
+          $log = "$env:RUNNER_TEMP\install.log"
+          & $env:PS_EXE -NoProfile -ExecutionPolicy Bypass -File install.ps1 | Tee-Object -FilePath $log
+          $code = $LASTEXITCODE
+          if ($code -ne 0) {
+              Write-Host "::error::install.ps1 exited with code $code"
+              exit 1
+          }
+          if (Select-String -Path $log -Pattern 'Install stopped' -SimpleMatch -Quiet) {
+              Write-Host '::error::install.ps1 stopped; the lines above say why'
+              exit 1
+          }
+          if (-not (Select-String -Path $log -Pattern 'Ixel is installed.' -SimpleMatch -Quiet)) {
+              Write-Host "::error::install.ps1 never said 'Ixel is installed.'"
+              exit 1
+          }
+
+      # This step is a new process, with the PATH the runner started with: add the user PATH the
+      # installers saved, as a new terminal window would have it.
+      - name: ixel and handoff work in a new shell
+        shell: pwsh
+        run: |
+          $env:Path = [Environment]::GetEnvironmentVariable('Path', 'User') + ';' + $env:Path
+          # A warning on stderr isn't a failure: the exit code is the verdict
+          $ErrorActionPreference = 'Continue'
+          foreach ($tool in 'ixel', 'handoff') {
+              if (-not (Get-Command $tool -ErrorAction SilentlyContinue)) {
+                  Write-Host "::error::${tool} isn't on the PATH in a new shell"
+                  exit 1
+              }
+              $global:LASTEXITCODE = 0
+              $out = & $tool version 2>&1
+              $code = $LASTEXITCODE
+              $text = ($out | Out-String).Trim()
+              Write-Host "${tool} version: $text"
+              if ($code -ne 0) {
+                  Write-Host "::error::${tool} version failed (exit code $code)"
+                  exit 1
+              }
+              if ($text -notmatch '\d') {
+                  Write-Host "::error::${tool} version printed no version"
+                  exit 1
+              }
+          }
