@@ -23,6 +23,20 @@ Everything runs on your computer, with the API keys, subscriptions and local mod
 
 **[ixelai.com](https://ixelai.com)** · [Docs](https://ixelai.com/docs/) · [Privacy](https://ixelai.com/docs/privacy/)
 
+## What it is, and what it isn't
+
+- It runs on your computer. There is no account, no server of ours and no telemetry. Your questions go from
+  your computer to the AI companies you set up.
+- It isn't a model or a hosted service. It uses your own API keys, subscriptions and local models.
+- It acts when you ask or approve, not on its own around the clock. The Board runs a task only once you
+  approve it, and never pushes. Merge goes into the branch you have checked out.
+- When the panel agrees, that doesn't make the answer right. The models can share the same mistake.
+- The Agent's commands are sandboxed, with no network and writes only in its folder, only on macOS and only
+  while Computer access is off; even then they can read your files. Elsewhere, or with it on, they run as you,
+  after you approve them.
+- Handoff's sandbox that lets agents run commands is Linux only. On macOS and Windows its workers only edit
+  files.
+
 ## Ixel Agent (beta)
 
 The Ixel Agent is an agent in the Ixel app that can work on your computer for you.
