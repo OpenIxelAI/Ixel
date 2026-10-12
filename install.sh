@@ -16,9 +16,10 @@
 #
 # It needs git, bash and Python 3.10 or newer, and asks before installing any that is missing. On
 # Linux that is the distribution's package manager, through sudo when you aren't root. On a Mac it
-# is Apple's Command Line Tools (for git), and Homebrew or python.org's installer (for Python),
-# which is checked against a pinned SHA-256 first. Nothing is installed, and sudo never runs,
-# without a yes. With no terminal to answer on, it prints what to run instead.
+# is Apple's Command Line Tools (for git), and Homebrew, or else python.org's installer (for
+# Python), which is opened only when its SHA-256 matches the one pinned in this file. Nothing is
+# installed, and sudo never runs, without a yes. With no terminal to answer on, it prints what to
+# run instead.
 #
 # With `curl | sh`, this script arrives on standard input, so everything is inside main(), which
 # runs only once the whole file has been read, and nothing it starts reads standard input:
@@ -27,6 +28,16 @@
 main() {
   # What to install: "" or all for everything (Ixel), mat for Ixel MAT alone, handoff for Handoff alone
   ONLY=""
+
+  # The Python that a Mac without Homebrew is offered: python.org's universal2 installer, which
+  # is opened only when its SHA-256 matches the one pinned here. To update, bump the version and the
+  # hash together, to a 3.13.x on https://www.python.org/downloads/macos/. The maintainer fills
+  # PYTHON_ORG_SHA256 from the file itself (shasum -a 256 python-3.13.X-macos11.pkg) or the release
+  # page. While it is empty the installer never downloads or installs the package: it only prints
+  # the URL.
+  PYTHON_ORG_VERSION="3.13.7"
+  PYTHON_ORG_URL="https://www.python.org/ftp/python/$PYTHON_ORG_VERSION/python-$PYTHON_ORG_VERSION-macos11.pkg"
+  PYTHON_ORG_SHA256=""
 
   set -eu
 
@@ -316,13 +327,34 @@ main() {
   need git
   need bash
 
-  # On a Mac, Python comes from Homebrew when it is there. (Linux has it, or has stopped, above.)
+  # On a Mac, Python comes from Homebrew when it is there, and otherwise from python.org's
+  # installer. (Linux has Python, or has stopped, above.)
   if [ "$system" = mac ] && ! have_python; then
-    if command -v brew >/dev/null 2>&1 \
-        && ask "$name needs Python 3.10 or newer. Install Python 3.13 with Homebrew now?"; then
-      brew install python@3.13 </dev/null || stop "Homebrew couldn't install Python 3.13 (the lines above say why)."
+    if command -v brew >/dev/null 2>&1; then
+      if ask "$name needs Python 3.10 or newer. Install Python 3.13 with Homebrew now?"; then
+        brew install python@3.13 </dev/null || stop "Homebrew couldn't install Python 3.13 (the lines above say why)."
+      else
+        stop "$name needs Python 3.10 or newer. Get it from https://www.python.org/downloads/ or with Homebrew:  brew install python@3.13"
+      fi
+    # No question while there is no pinned hash: a package that can't be checked is never opened
+    elif [ -z "$PYTHON_ORG_SHA256" ] \
+        || ! ask "$name needs Python 3.10 or newer. Download Python $PYTHON_ORG_VERSION from python.org and open its installer?"; then
+      stop "$name needs Python 3.10 or newer. Download Python $PYTHON_ORG_VERSION from  $PYTHON_ORG_URL  and open it."
     else
-      stop "$name needs Python 3.10 or newer. Get it from https://www.python.org/downloads/ or with Homebrew:  brew install python@3.13"
+      pkg_dir="$(mktemp -d "${TMPDIR:-/tmp}/ixel-python.XXXXXX")" || stop "couldn't make a temporary folder to download Python into."
+      pkg="$pkg_dir/python-$PYTHON_ORG_VERSION-macos11.pkg"
+      say "Downloading $PYTHON_ORG_URL"
+      curl -fsSL --proto '=https' -o "$pkg" "$PYTHON_ORG_URL" </dev/null \
+        || stop "couldn't download $PYTHON_ORG_URL (the lines above say why)."
+      pkg_sum="$(shasum -a 256 "$pkg" | cut -d ' ' -f 1 | tr '[:upper:]' '[:lower:]')"
+      want_sum="$(printf '%s' "$PYTHON_ORG_SHA256" | tr '[:upper:]' '[:lower:]')"
+      if [ "$pkg_sum" != "$want_sum" ]; then
+        rm -rf "$pkg_dir"
+        stop "the download from $PYTHON_ORG_URL didn't match its SHA-256 (expected $want_sum, got ${pkg_sum:-nothing}), so it wasn't opened. Download Python from https://www.python.org/downloads/ instead."
+      fi
+      # Installer reads the file after open returns, so it stays in its temporary folder
+      open "$pkg" </dev/null || stop "couldn't open $pkg. Open it yourself to install Python."
+      stop "finish the Python installer (it opened in a window of its own)."
     fi
   fi
 
