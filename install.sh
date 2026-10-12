@@ -35,9 +35,9 @@ main() {
   # PYTHON_ORG_SHA256 from the file itself (shasum -a 256 python-3.13.X-macos11.pkg) or the release
   # page. While it is empty the installer never downloads or installs the package: it only prints
   # the URL.
-  PYTHON_ORG_VERSION="3.13.7"
+  PYTHON_ORG_VERSION="3.13.16"
   PYTHON_ORG_URL="https://www.python.org/ftp/python/$PYTHON_ORG_VERSION/python-$PYTHON_ORG_VERSION-macos11.pkg"
-  PYTHON_ORG_SHA256=""
+  PYTHON_ORG_SHA256="30666509020b4da0dd8bc2e773255f34d76b7bb80b66960a928d5f6daa0192d7"
 
   set -eu
 
