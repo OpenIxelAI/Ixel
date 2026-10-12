@@ -8,16 +8,35 @@
 
 Ixel is the all-in-one from [IxelAI](https://ixelai.com). One install gets you:
 
+- **The Ixel app:** everything in one window. Ask (several models answer and grade each other blind, and
+  you get one verdict), the Board (Handoff's shared task board for your agents, with a model or chain picker,
+  effort, cost per task, and Merge), the [Agent](#ixel-agent-beta) (beta),
+  [Machines](https://ixelai.com/machines/) (your servers and the agents on them), Health and Settings.
+- **[Ixel Agent (beta)](#ixel-agent-beta):** an agent in the Ixel app that can work on your computer for you.
+  It asks before any change.
 - **[Ixel MAT](https://ixelai.com/ixel-mat/):** ask several models at once. They grade each other's
   answers without knowing whose they are, and you get one verdict.
 - **[Handoff](https://ixelai.com/handoff/):** one task board your agents share, so Claude,
   Codex and the rest hand work to each other instead of through you.
-- **The Ixel app:** Ask, the Board, [Machines](https://ixelai.com/machines/) (your servers and the agents on
-  them), Health and Settings in one window.
 
 Everything runs on your computer, with the API keys, subscriptions and local models you already have.
 
 **[ixelai.com](https://ixelai.com)** · [Docs](https://ixelai.com/docs/) · [Privacy](https://ixelai.com/docs/privacy/)
+
+## Ixel Agent (beta)
+
+The Ixel Agent is an agent in the Ixel app that can work on your computer for you.
+
+- It asks before every edit, command, screenshot or opening something. If you choose Always allow for a
+  command, that command runs without asking next time.
+- You can give it a photo, video or file.
+- The Computer access switch is off by default. While it is off, commands on macOS run sandboxed with no
+  network, and the agent stays in the folder you picked. Turning it on lets the agent work across your home
+  folder, run commands with the network, take screenshots and open apps. It still asks first.
+
+Its code is in the [Ixel-MAT repository](https://github.com/OpenIxelAI/Ixel-MAT) with the rest of the app.
+Read [AGENT_BETA.md](https://github.com/OpenIxelAI/Ixel-MAT/blob/main/AGENT_BETA.md) or the
+[Agent docs](https://ixelai.com/docs/app/#agent).
 
 ## Install
 
